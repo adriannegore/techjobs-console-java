@@ -7,9 +7,7 @@ import org.apache.commons.csv.CSVRecord;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by LaunchCode
@@ -54,17 +52,34 @@ public class JobData {
         return allJobs;
     }
 
-    /**
-     * Returns results of search the jobs data by key/value, using
-     * inclusion of the search term.
-     *
-     * For example, searching for employer "Enterprise" will include results
-     * with "Enterprise Holdings, Inc".
-     *
-     * @param column   Column that should be searched.
-     * @param value Value of teh field to search for
-     * @return List of all jobs matching the criteria
-     */
+
+    public static ArrayList<HashMap<String, String>> findByValue(String value) {
+
+        // load data, if not already loaded
+        loadData();
+
+        //where we are storing the jobs we're finding.
+        ArrayList<HashMap<String, String>> results = new ArrayList<>();
+
+        // for job in all jobs
+        // look at each value inside of job
+        // if jobValue contains value
+        // add job to result
+
+        for (HashMap<String, String> job : allJobs) {
+            for (String jobValue : job.values()) {
+                String noCaseValue =jobValue.toLowerCase();
+                if (noCaseValue.contains(value.toLowerCase())) {
+                    if (!results.contains(job)) {
+                        results.add(job);
+                    }
+                }
+            }
+        }
+        return results;
+    }
+
+
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
 
         // load data, if not already loaded
@@ -75,8 +90,9 @@ public class JobData {
         for (HashMap<String, String> row : allJobs) {
 
             String aValue = row.get(column);
+            String noCaseValue = aValue.toLowerCase();
 
-            if (aValue.contains(value)) {
+            if (noCaseValue.contains(value.toLowerCase())) {
                 jobs.add(row);
             }
         }
